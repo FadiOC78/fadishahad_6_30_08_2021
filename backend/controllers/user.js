@@ -2,13 +2,13 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cryptojs = require('crypto-js');
-require('dotenv').config();
+//require('dotenv').config();
 
 exports.signup = (req, res, next) => {
-    //const hashedEmail = cryptojs
-    //.HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN)
-    //.toString(cryptojs.enc.Base64);
-    const hashedEmail = 'test';
+    const hashedEmail = cryptojs
+        .HmacSHA512(req.body.email, process.env.SECRET_TOKEN)
+        .toString(cryptojs.enc.Base64);
+    console.log('hashedEmail=' + hashedEmail);
     bcrypt
         .hash(req.body.password, 10)
         .then(hash => {
@@ -21,14 +21,14 @@ exports.signup = (req, res, next) => {
                 .catch(error => res.status(400).json({ error }));
         })
         .catch(error => {
-            console.log(error);
+            console.log('signup - catch bcrypt=' + error);
             return res.status(500).json({ error });
         });
 };
 
 exports.login = (req, res, next) => {
     const hashedEmail = cryptojs
-        .HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN)
+        .HmacSHA512(req.body.email, process.env.SECRET_TOKEN)
         .toString(cryptojs.enc.Base64);
     User.findOne({ email: hashedEmail })
         .then(user => {
@@ -50,7 +50,13 @@ exports.login = (req, res, next) => {
                         }),
                     });
                 })
-                .catch(error => res.status(500).json({ error }));
+                .catch(error => {
+                    console.log('login - catch bcrypt=' + error);
+                    return res.status(500).json({ error });
+                });
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => {
+            console.log('login -catch global=' + error);
+            res.status(500).json({ error });
+        });
 };
