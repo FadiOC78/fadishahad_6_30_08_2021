@@ -2,7 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cryptojs = require('crypto-js');
-const mongoSanitize = require('express-mongo-sanitize');
+const sanitize = require('mongo-sanitize');
 //require('dotenv').config();
 
 exports.signup = (req, res, next) => {
@@ -11,7 +11,7 @@ exports.signup = (req, res, next) => {
         .toString(cryptojs.enc.Base64);
     console.log('hashedEmail=' + hashedEmail);
     bcrypt
-        .hash(mongoSanitize(req.body.password), 10)
+        .hash(sanitize(req.body.password), 10)
         .then(hash => {
             const user = new User({
                 email: hashedEmail,

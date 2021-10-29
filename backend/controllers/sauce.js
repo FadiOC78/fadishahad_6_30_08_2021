@@ -1,4 +1,4 @@
-const Sauce = require('../models/Sauce');
+const Sauce = require('../models/sauce');
 const fs = require('fs');
 
 exports.getAllSauces = (req, res, next) => {
