@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
 const path = require('path');
 require('dotenv').config();
 
@@ -30,8 +29,6 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-
-app.use(mongoSanitize());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
